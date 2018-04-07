@@ -1,10 +1,13 @@
+#!/usr/bin/python3.6
+#-*- coding: utf-8 -*-
+
 import os
 
 FOTOS = ['*.jpg', '*.jpeg', '*.png']
 VIDEOS = ['*.avi', '*.mov', '*.mts', '*.mp4']
-MINIATURA = '.miniatura'
-FOTOGRAMA = '.fotograma'
 WEBM = '.webm'
+MINIATURA = '.miniatura'
+#FOTOGRAMA = '.fotograma'
 START_NUMBER = 10000
 TIME_SORT_FILE = 'latestPicture.txt'
 HTML_FILE = "index.html"
@@ -24,5 +27,3 @@ def isVideo(fileName):
             return True
 
     return False
-
-

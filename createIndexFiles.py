@@ -1,5 +1,6 @@
-#!/usr/bin/python
-# This Python file uses the following encoding: utf-8
+#!/usr/bin/python3.6
+#-*- coding: utf-8 -*-
+
 
 import os
 import glob
@@ -89,31 +90,32 @@ for folder in sorted(os.walk('.')):
                 </h2>
 """)
 
-                for item in sorted(videoList):
-                    video_name = os.path.join('.', os.path.basename(item)[:-len(namesAndPaths.FOTOGRAMA)])
+                for videoName in sorted(videoList):
+                    # get the codecs info
+                    command = [
+                            'ffprobe',
+                            '-show_streams',
+                            '-loglevel', 'quiet',
+                            '-print_format', 'default',
+                            videoName
+                            ]
+                    p = subprocess.run(command, stdout=subprocess.PIPE)
+                    codecs = []
+                    for row in p.stdout.decode('utf-8').split('\n'):
+                        if 'codec_name' in row:
+                            codecs.extend([row.split('=')[1]])
 
                     f.write("""
                 <video width="30%" controls>
-                    <source src="{video}" width="31%" type="video/webm">
+                    <source src="{video}" width="31%" type='video/webm; codecs="{codecs}"'>
                     alburru
                 </video>
-                """.format(video=video_name))
+                """.format(
+                    video=os.path.basename(videoName),
+                    codecs=",".join(codecs)))
 
-#                    f.write("""
-#                <object width="30%" type="video/quicktime" data="{video}">
-#                    <param name="controller" value="true" />
-#                    <param name="autoplay" value="false" />
-#                </object>
-#                """.format(video=video_name))
 
-#                    f.write("""
-#                <a href="{video}" rel="videos" title = "{video}">
-#                    <img src="{fotograma}" width="31%" border="\#000000" alt={video}>
-#                </a>""".format(
-#                        video = video_name,
-#                        fotograma = video_name + namesAndPaths.FOTOGRAMA
-#                        ))
-
+            # write the end of file
             f.write("""
 
             <hr>
@@ -130,4 +132,3 @@ for folder in sorted(os.walk('.')):
     </html>""".format(
         day=datetime.datetime.now().strftime('%A %d de %B de %Y'),
         time=datetime.datetime.now().strftime('%X')))
-

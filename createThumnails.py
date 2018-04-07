@@ -1,5 +1,5 @@
-#!/usr/bin/python
-# This Python file uses the following encoding: utf-8
+#!/usr/bin/python3.6
+#-*- coding: utf-8 -*-
 
 import os
 import glob
@@ -123,22 +123,26 @@ for folder in sorted(os.walk('.')):
 
         # video files
         if namesAndPaths.isVideo(mediaFileName):
-            # create a thumnail image
-            fotogramaFileName = mediaFileName + namesAndPaths.FOTOGRAMA
-            if not os.path.isfile(fotogramaFileName):
-                # fotograma file must be created
-                command = [
-                        'ffmpeg', 
-                        '-i', mediaFileName,
-                        '-ss', '0',
-                        '-vframes', '1',
-                        '-vf', 'scale=320:-1',
-                        fotogramaFileName + '.jpg'
-                        ]
-                subprocess.call(command)
-                os.rename(fotogramaFileName + '.jpg', fotogramaFileName)
+# ------------------- REMOVED --------------------------------
+# FOTOGRAMA files are no longer created, because a small-size video (webm) is
+# created
+#            # create a thumnail image
+#            fotogramaFileName = mediaFileName + namesAndPaths.FOTOGRAMA
+#            if not os.path.isfile(fotogramaFileName):
+#                # fotograma file must be created
+#                command = [
+#                        'ffmpeg', 
+#                        '-i', mediaFileName,
+#                        '-ss', '0',
+#                        '-vframes', '1',
+#                        '-vf', 'scale=320:-1',
+#                        fotogramaFileName + '.jpg'
+#                        ]
+#                subprocess.call(command)
+#                os.rename(fotogramaFileName + '.jpg', fotogramaFileName)
+# ------------------- REMOVED --------------------------------
 
-            # create also a webm file for streaming
+            # create a webm file for streaming
             webmFileName = mediaFileName + namesAndPaths.WEBM
             if not os.path.isfile(webmFileName):
                 # fotograma file must be created
@@ -146,9 +150,10 @@ for folder in sorted(os.walk('.')):
                         'ffmpeg', 
                         '-i', mediaFileName,
                         '-c:v', 'libvpx-vp9',
-                        '-minrate', '20k',
-                        '-b:v', '80k',
-                        '-maxrate', '150k',
+                        '-minrate', '100k',
+                        '-b:v', '800k',
+                        '-maxrate', '2500k',
+                        '-deadline', 'good',
                         webmFileName
                         ]
                 subprocess.call(command)
